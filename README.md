@@ -1,26 +1,168 @@
-#include <stdio.h>
-#include <string.h>
+# Movie Ticket Booking System
 
-#define MAX_MOVIES 3
-#define MAX_SHOWS 3
-#define MAX_SEATS 30
-#define MAX_BOOKINGS 100
+## Overview
 
-/* ---------- STRUCTURES ---------- */
+The **Movie Ticket Booking System** is a console-based application developed in **C**. It allows users to view available movies and show timings, book multiple movie tickets, select seats, view booking details, cancel bookings, and view all active bookings.
 
+The system uses **structures, arrays, functions, loops, conditional statements, and string handling** to manage movie and booking information.
+
+## Features
+
+* View available movies and ticket prices
+* View available show timings
+* Book one or multiple tickets in a single booking
+* Select multiple seats
+* Prevent booking of already occupied seats
+* Prevent selecting the same seat twice in one booking
+* Generate a unique Booking ID
+* Store customer name and phone number
+* Calculate the total ticket amount automatically
+* View individual booking details
+* Cancel an entire booking using the Booking ID
+* View all active bookings
+* Maintain separate seat availability for each movie and show
+
+## Movies
+
+The system currently contains the following movies:
+
+| Movie             | Ticket Price |
+| ----------------- | -----------: |
+| Interstellar      |      Rs. 250 |
+| Avengers: Endgame |      Rs. 220 |
+| Leo               |      Rs. 200 |
+
+## Show Timings
+
+The available show timings are:
+
+| Show ID | Timing   |
+| ------- | -------- |
+| 1       | 10:00 AM |
+| 2       | 02:00 PM |
+| 3       | 07:00 PM |
+
+## Seat Management
+
+The system provides **30 seats** for each movie-show combination.
+
+* `[01]`, `[02]`, etc. indicate available seats.
+* `[ X ]` indicates a booked seat.
+* Seats are tracked separately for each movie and show.
+* A seat booked for one movie/show can still be booked for another movie/show.
+
+## Multiple Ticket Booking
+
+Users can book multiple tickets in a single transaction.
+
+For example:
+
+```text
+Enter number of tickets: 4
+
+Enter seat number 1: 1
+Enter seat number 2: 2
+Enter seat number 3: 3
+Enter seat number 4: 4
+```
+
+The system creates one booking containing all four seats and calculates the total amount automatically.
+
+```text
+Tickets      : 4
+Seats        : 1 2 3 4
+Price/Ticket : Rs. 250.00
+Total Amount : Rs. 1000.00
+```
+
+## Menu Options
+
+```text
+1. View Movies
+2. View Show Timings
+3. Book Ticket
+4. View Booking
+5. Cancel Booking
+6. View All Bookings
+7. Exit
+```
+
+### 1. View Movies
+
+Displays all available movies along with their IDs and ticket prices.
+
+### 2. View Show Timings
+
+Displays all available show timings.
+
+### 3. Book Ticket
+
+The user selects:
+
+1. Movie
+2. Show timing
+3. Number of tickets
+4. Seats
+5. Customer name
+6. Phone number
+
+A Booking ID is then generated and the total amount is calculated.
+
+### 4. View Booking
+
+The user enters a Booking ID to view:
+
+* Booking ID
+* Customer name
+* Phone number
+* Movie
+* Show timing
+* Number of tickets
+* Selected seats
+* Total amount
+
+### 5. Cancel Booking
+
+The user enters a Booking ID. The complete booking is cancelled, making all the seats in that booking available again.
+
+### 6. View All Bookings
+
+Displays all currently active bookings in a tabular format.
+
+### 7. Exit
+
+Terminates the program.
+
+## Data Structures Used
+
+### Movie Structure
+
+```c
 struct Movie
 {
     int id;
     char name[50];
     float price;
 };
+```
 
+Stores movie ID, movie name, and ticket price.
+
+### Show Structure
+
+```c
 struct Show
 {
     int id;
     char time[20];
 };
+```
 
+Stores show ID and show timing.
+
+### Booking Structure
+
+```c
 struct Booking
 {
     int bookingID;
@@ -36,553 +178,112 @@ struct Booking
     float amount;
     int active;
 };
+```
 
-/* ---------- GLOBAL DATA ---------- */
+Stores complete booking information. The `seatNo` array allows multiple seats to be stored under a single booking.
 
-struct Movie movies[MAX_MOVIES] =
-{
-    {1, "Interstellar", 250.00},
-    {2, "Avengers: Endgame", 220.00},
-    {3, "Leo", 200.00}
-};
+## Important Functions
 
-struct Show shows[MAX_SHOWS] =
-{
-    {1, "10:00 AM"},
-    {2, "02:00 PM"},
-    {3, "07:00 PM"}
-};
+| Function            | Purpose                            |
+| ------------------- | ---------------------------------- |
+| `displayHeader()`   | Displays the system heading        |
+| `displayMovies()`   | Displays available movies          |
+| `displayShows()`    | Displays show timings              |
+| `displaySeats()`    | Displays seat availability         |
+| `isSeatAvailable()` | Checks whether a seat is available |
+| `getMovieIndex()`   | Finds a movie using its ID         |
+| `getShowIndex()`    | Finds a show using its ID          |
+| `bookTicket()`      | Books one or multiple tickets      |
+| `viewBooking()`     | Displays a particular booking      |
+| `cancelBooking()`   | Cancels a booking                  |
+| `viewAllBookings()` | Displays all active bookings       |
 
-struct Booking bookings[MAX_BOOKINGS];
+## Constants
 
-int bookingCount = 0;
+The program uses the following limits:
 
-/* ---------- FUNCTIONS ---------- */
+```c
+#define MAX_MOVIES 3
+#define MAX_SHOWS 3
+#define MAX_SEATS 30
+#define MAX_BOOKINGS 100
+```
 
-void displayHeader()
-{
-    printf("\n");
-    printf("====================================================\n");
-    printf("              MOVIE TICKET BOOKING SYSTEM           \n");
-    printf("====================================================\n");
-}
+This means the system supports:
 
-void displayMovies()
-{
-    int i;
+* 3 movies
+* 3 show timings
+* 30 seats per movie-show combination
+* Up to 100 booking records
 
-    printf("\n---------------- AVAILABLE MOVIES ------------------\n");
+## Technologies Used
 
-    printf("%-5s %-30s %-10s\n",
-           "ID", "MOVIE", "PRICE");
+* **Programming Language:** C
+* **Compiler:** GCC / MinGW / Turbo C / any standard C compiler
+* **Interface:** Command Line / Console
 
-    printf("----------------------------------------------------\n");
+## How to Run
 
-    for(i = 0; i < MAX_MOVIES; i++)
-    {
-        printf("%-5d %-30s Rs. %.2f\n",
-               movies[i].id,
-               movies[i].name,
-               movies[i].price);
-    }
-}
+### Compile
 
-void displayShows()
-{
-    int i;
+Using GCC:
 
-    printf("\n---------------- SHOW TIMINGS ----------------------\n");
+```bash
+gcc movie_booking.c -o movie_booking
+```
 
-    printf("%-5s %-20s\n",
-           "ID", "TIMING");
+### Run
 
-    printf("--------------------------------\n");
+On Windows:
 
-    for(i = 0; i < MAX_SHOWS; i++)
-    {
-        printf("%-5d %-20s\n",
-               shows[i].id,
-               shows[i].time);
-    }
-}
+```bash
+movie_booking.exe
+```
 
-void displaySeats(int movieID, int showID)
-{
-    int i, j;
-    int booked;
+On Linux/macOS:
 
-    printf("\n---------------- SEAT LAYOUT -----------------------\n");
+```bash
+./movie_booking
+```
 
-    for(i = 1; i <= MAX_SEATS; i++)
-    {
-        booked = 0;
+## Sample Booking
 
-        for(j = 0; j < bookingCount; j++)
-        {
-            if(bookings[j].active &&
-               bookings[j].movieID == movieID &&
-               bookings[j].showID == showID)
-            {
-                int k;
+```text
+Movie        : Interstellar
+Show         : 07:00 PM
+Customer     : Priya
+Tickets      : 4
+Seats        : 1 2 3 4
+Price/Ticket : Rs. 250.00
+Total Amount : Rs. 1000.00
+```
 
-                for(k = 0; k < bookings[j].ticketCount; k++)
-                {
-                    if(bookings[j].seatNo[k] == i)
-                    {
-                        booked = 1;
-                        break;
-                    }
-                }
-            }
+## Limitations
 
-            if(booked)
-                break;
-        }
+* Data is stored only during program execution.
+* Bookings are lost when the program is closed.
+* The system does not currently include online payment.
+* Movie and show information is predefined in the source code.
+* There is no login or administrator module.
 
-        if(booked)
-            printf("[ X ] ");
-        else
-            printf("[%02d] ", i);
+## Future Enhancements
 
-        if(i % 6 == 0)
-            printf("\n");
-    }
+The project can be extended with:
 
-    printf("\n\n[ X ] = BOOKED\n");
-}
+* File handling for permanent booking storage
+* Login and registration
+* Admin dashboard
+* Online payment simulation
+* Different seat categories such as Premium and Regular
+* Different prices for different show timings
+* Food and beverage booking
+* Automatic ticket generation
+* Booking history
+* Date-wise show scheduling
 
-int isSeatAvailable(int movieID, int showID, int seatNo)
-{
-    int i, j;
+## Author
 
-    for(i = 0; i < bookingCount; i++)
-    {
-        if(bookings[i].active &&
-           bookings[i].movieID == movieID &&
-           bookings[i].showID == showID)
-        {
-            for(j = 0; j < bookings[i].ticketCount; j++)
-            {
-                if(bookings[i].seatNo[j] == seatNo)
-                    return 0;
-            }
-        }
-    }
+**Movie Ticket Booking System**
 
-    return 1;
-}
+Developed as a C programming project demonstrating structures, arrays, functions, and menu-driven programming.
 
-int getMovieIndex(int movieID)
-{
-    int i;
-
-    for(i = 0; i < MAX_MOVIES; i++)
-    {
-        if(movies[i].id == movieID)
-            return i;
-    }
-
-    return -1;
-}
-
-int getShowIndex(int showID)
-{
-    int i;
-
-    for(i = 0; i < MAX_SHOWS; i++)
-    {
-        if(shows[i].id == showID)
-            return i;
-    }
-
-    return -1;
-}
-
-/* ---------- BOOK TICKET ---------- */
-
-void bookTicket()
-{
-    int movieID;
-    int showID;
-
-    int movieIndex;
-    int showIndex;
-
-    int ticketCount;
-    int seatNo;
-
-    int i, j;
-    int duplicate;
-
-    char name[50];
-    char phone[15];
-
-    if(bookingCount >= MAX_BOOKINGS)
-    {
-        printf("\nBooking capacity reached!\n");
-        return;
-    }
-
-    /* Select Movie */
-
-    displayMovies();
-
-    printf("\nEnter Movie ID: ");
-    scanf("%d", &movieID);
-
-    movieIndex = getMovieIndex(movieID);
-
-    if(movieIndex == -1)
-    {
-        printf("Invalid Movie ID!\n");
-        return;
-    }
-
-    /* Select Show */
-
-    displayShows();
-
-    printf("\nEnter Show ID: ");
-    scanf("%d", &showID);
-
-    showIndex = getShowIndex(showID);
-
-    if(showIndex == -1)
-    {
-        printf("Invalid Show ID!\n");
-        return;
-    }
-
-    /* Number of tickets */
-
-    printf("\nEnter number of tickets: ");
-    scanf("%d", &ticketCount);
-
-    if(ticketCount < 1 || ticketCount > MAX_SEATS)
-    {
-        printf("Invalid number of tickets!\n");
-        return;
-    }
-
-    displaySeats(movieID, showID);
-
-    /* Select multiple seats */
-
-    for(i = 0; i < ticketCount; i++)
-    {
-        printf("\nEnter seat number %d: ", i + 1);
-        scanf("%d", &seatNo);
-
-        /* Check seat range */
-
-        if(seatNo < 1 || seatNo > MAX_SEATS)
-        {
-            printf("Invalid seat number!\n");
-            i--;
-            continue;
-        }
-
-        /* Check whether seat is already booked */
-
-        if(!isSeatAvailable(movieID, showID, seatNo))
-        {
-            printf("Seat %d is already booked!\n", seatNo);
-            i--;
-            continue;
-        }
-
-        /* Check duplicate seats in current booking */
-
-        duplicate = 0;
-
-        for(j = 0; j < i; j++)
-        {
-            if(bookings[bookingCount].seatNo[j] == seatNo)
-            {
-                duplicate = 1;
-                break;
-            }
-        }
-
-        if(duplicate)
-        {
-            printf("You have already selected seat %d!\n",
-                   seatNo);
-
-            i--;
-            continue;
-        }
-
-        bookings[bookingCount].seatNo[i] = seatNo;
-    }
-
-    /* Customer Details */
-
-    printf("\nEnter Customer Name: ");
-    scanf(" %[^\n]", name);
-
-    printf("Enter Phone Number: ");
-    scanf("%s", phone);
-
-    /* Store Booking */
-
-    bookings[bookingCount].bookingID =
-        1001 + bookingCount;
-
-    strcpy(bookings[bookingCount].customerName, name);
-
-    strcpy(bookings[bookingCount].phone, phone);
-
-    bookings[bookingCount].movieID = movieID;
-
-    bookings[bookingCount].showID = showID;
-
-    bookings[bookingCount].ticketCount =
-        ticketCount;
-
-    bookings[bookingCount].amount =
-        movies[movieIndex].price * ticketCount;
-
-    bookings[bookingCount].active = 1;
-
-    /* Booking Confirmation */
-
-    printf("\n");
-    printf("====================================================\n");
-    printf("              BOOKING CONFIRMED                    \n");
-    printf("====================================================\n");
-
-    printf("Booking ID   : %d\n",
-           bookings[bookingCount].bookingID);
-
-    printf("Customer     : %s\n",
-           bookings[bookingCount].customerName);
-
-    printf("Phone        : %s\n",
-           bookings[bookingCount].phone);
-
-    printf("Movie        : %s\n",
-           movies[movieIndex].name);
-
-    printf("Show         : %s\n",
-           shows[showIndex].time);
-
-    printf("Tickets      : %d\n",
-           ticketCount);
-
-    printf("Seats        : ");
-
-    for(i = 0; i < ticketCount; i++)
-    {
-        printf("%d ", bookings[bookingCount].seatNo[i]);
-    }
-
-    printf("\n");
-
-    printf("Price/Ticket : Rs. %.2f\n",
-           movies[movieIndex].price);
-
-    printf("Total Amount : Rs. %.2f\n",
-           bookings[bookingCount].amount);
-
-    printf("====================================================\n");
-
-    bookingCount++;
-}
-
-/* ---------- VIEW BOOKING ---------- */
-
-void viewBooking()
-{
-    int bookingID;
-    int i, j;
-    int found = 0;
-
-    printf("\nEnter Booking ID: ");
-    scanf("%d", &bookingID);
-
-    for(i = 0; i < bookingCount; i++)
-    {
-        if(bookings[i].bookingID == bookingID &&
-           bookings[i].active)
-        {
-            int movieIndex =
-                getMovieIndex(bookings[i].movieID);
-
-            int showIndex =
-                getShowIndex(bookings[i].showID);
-
-            printf("\n---------------- BOOKING DETAILS ------------------\n");
-
-            printf("Booking ID  : %d\n",
-                   bookings[i].bookingID);
-
-            printf("Customer    : %s\n",
-                   bookings[i].customerName);
-
-            printf("Phone       : %s\n",
-                   bookings[i].phone);
-
-            printf("Movie       : %s\n",
-                   movies[movieIndex].name);
-
-            printf("Show        : %s\n",
-                   shows[showIndex].time);
-
-            printf("Tickets     : %d\n",
-                   bookings[i].ticketCount);
-
-            printf("Seats       : ");
-
-            for(j = 0; j < bookings[i].ticketCount; j++)
-            {
-                printf("%d ", bookings[i].seatNo[j]);
-            }
-
-            printf("\n");
-
-            printf("Amount      : Rs. %.2f\n",
-                   bookings[i].amount);
-
-            printf("----------------------------------------------------\n");
-
-            found = 1;
-            break;
-        }
-    }
-
-    if(!found)
-        printf("\nBooking not found!\n");
-}
-
-/* ---------- CANCEL BOOKING ---------- */
-
-void cancelBooking()
-{
-    int bookingID;
-    int i;
-
-    printf("\nEnter Booking ID to cancel: ");
-    scanf("%d", &bookingID);
-
-    for(i = 0; i < bookingCount; i++)
-    {
-        if(bookings[i].bookingID == bookingID &&
-           bookings[i].active)
-        {
-            bookings[i].active = 0;
-
-            printf("\nBooking cancelled successfully!\n");
-
-            return;
-        }
-    }
-
-    printf("\nBooking ID not found!\n");
-}
-
-/* ---------- VIEW ALL BOOKINGS ---------- */
-
-void viewAllBookings()
-{
-    int i, j;
-    int found = 0;
-
-    printf("\n---------------- ALL BOOKINGS ----------------------\n");
-
-    printf("%-8s %-18s %-20s %-8s %-10s\n",
-           "ID",
-           "CUSTOMER",
-           "MOVIE",
-           "SEATS",
-           "AMOUNT");
-
-    printf("----------------------------------------------------\n");
-
-    for(i = 0; i < bookingCount; i++)
-    {
-        if(bookings[i].active)
-        {
-            int movieIndex =
-                getMovieIndex(bookings[i].movieID);
-
-            printf("%-8d %-18s %-20s ",
-                   bookings[i].bookingID,
-                   bookings[i].customerName,
-                   movies[movieIndex].name);
-
-            for(j = 0; j < bookings[i].ticketCount; j++)
-            {
-                printf("%d ", bookings[i].seatNo[j]);
-            }
-
-            printf("     Rs. %.2f\n",
-                   bookings[i].amount);
-
-            found = 1;
-        }
-    }
-
-    if(!found)
-        printf("No active bookings.\n");
-}
-
-/* ---------- MAIN FUNCTION ---------- */
-
-int main()
-{
-    int choice;
-
-    do
-    {
-        displayHeader();
-
-        printf("\n1. View Movies\n");
-        printf("2. View Show Timings\n");
-        printf("3. Book Ticket\n");
-        printf("4. View Booking\n");
-        printf("5. Cancel Booking\n");
-        printf("6. View All Bookings\n");
-        printf("7. Exit\n");
-
-        printf("\nEnter your choice: ");
-        scanf("%d", &choice);
-
-        switch(choice)
-        {
-            case 1:
-                displayMovies();
-                break;
-
-            case 2:
-                displayShows();
-                break;
-
-            case 3:
-                bookTicket();
-                break;
-
-            case 4:
-                viewBooking();
-                break;
-
-            case 5:
-                cancelBooking();
-                break;
-
-            case 6:
-                viewAllBookings();
-                break;
-
-            case 7:
-                printf("\nThank you for using the system!\n");
-                break;
-
-            default:
-                printf("\nInvalid choice! Please try again.\n");
-        }
-
-    } while(choice != 7);
-
-    return 0;
-}
