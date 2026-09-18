@@ -198,6 +198,7 @@ Stores complete booking information. The `seatNo` array allows multiple seats to
 | `cancelBooking()`   | Cancels a booking                  |
 | `viewAllBookings()` | Displays all active bookings       |
 
+
 ## Constants
 
 The program uses the following limits:
