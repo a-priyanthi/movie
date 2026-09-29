@@ -1,6 +1,6 @@
 # Movie Ticket Booking System
 
-## Overview
+##   Overview
 
 The **Movie Ticket Booking System** is a console-based application developed in **C**. It allows users to view available movies and show timings, book multiple movie tickets, select seats, view booking details, cancel bookings, and view all active bookings.
 
