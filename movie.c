@@ -1,13 +1,10 @@
 #include <stdio.h>
 #include <string.h>
-
 #define MAX_MOVIES 3
 #define MAX_SHOWS 3
 #define MAX_SEATS 30
 #define MAX_BOOKINGS 100
-
 /* ---------- STRUCTURES ---------- */
-
 struct Movie
 {
     int id;
